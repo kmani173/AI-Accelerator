@@ -2,34 +2,51 @@ pipeline {
     agent any
 
     stages {
-        stage('Verify Java') {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Verify Tools') {
             steps {
                 sh 'java -version'
-            }
-        }
-
-        stage('Verify Git') {
-            steps {
                 sh 'git --version'
-            }
-        }
-
-        stage('Verify Python') {
-            steps {
                 sh 'python3 --version'
-            }
-        }
-
-        stage('Verify Gradle') {
-            steps {
                 sh 'gradle -v'
             }
         }
 
-        stage('Done') {
+        stage('Workspace') {
             steps {
-                echo 'AI Accelerator Jenkins Pipeline executed successfully!'
+                sh 'pwd'
+                sh 'ls -la'
             }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'echo "Building AI Accelerator Project..."'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'echo "Running Tests..."'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                sh 'echo "Packaging Application..."'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'AI Accelerator Pipeline completed successfully!'
         }
     }
 }
