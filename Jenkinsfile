@@ -1,4 +1,5 @@
 pipeline {
+
     agent any
 
     stages {
@@ -9,44 +10,57 @@ pipeline {
             }
         }
 
-        stage('Verify Tools') {
+        stage('Verify Java') {
             steps {
                 sh 'java -version'
+            }
+        }
+
+        stage('Verify Git') {
+            steps {
                 sh 'git --version'
+            }
+        }
+
+        stage('Verify Python') {
+            steps {
                 sh 'python3 --version'
+            }
+        }
+
+        stage('Verify Gradle') {
+            steps {
                 sh 'gradle -v'
             }
         }
 
-        stage('Workspace') {
+        stage('Gradle Build') {
             steps {
-                sh 'pwd'
-                sh 'ls -la'
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sh 'echo "Building AI Accelerator Project..."'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                sh 'echo "Running Tests..."'
-            }
-        }
-
-        stage('Package') {
-            steps {
-                sh 'echo "Packaging Application..."'
+                sh 'gradle clean build'
             }
         }
     }
 
     post {
-        success {
-            echo 'AI Accelerator Pipeline completed successfully!'
+
+        always {
+
+            archiveArtifacts artifacts: '**/build/**', fingerprint: true
+
         }
+
+        success {
+
+            echo "Build completed successfully."
+
+        }
+
+        failure {
+
+            echo "Build Failed."
+
+        }
+
     }
+
 }
