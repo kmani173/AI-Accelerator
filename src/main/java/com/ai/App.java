@@ -4,7 +4,7 @@ public class App {
 
     public static void main(String[] args) {
 
-        System.out.println("AI Accelerator Application")
+        System.out.prntln("AI Accelerator Application");
 
     }
 
