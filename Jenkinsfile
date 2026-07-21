@@ -1,3 +1,5 @@
+def buildStatus = 0
+
 pipeline {
 
     agent any
@@ -36,19 +38,34 @@ pipeline {
 
         stage('Gradle Build') {
             steps {
-                sh 'gradle clean build'
-            }
-        }
+                script {
+                    buildStatus = sh(
+                        script: 'gradle clean build > build.log 2>&1',
+                        returnStatus: true
+                    )
 
-        stage('Save Build Log') {
-            steps {
-                sh 'gradle clean build > build.log 2>&1'
+                    if (buildStatus == 0) {
+                        echo "Gradle Build Successful."
+                    } else {
+                        echo "Gradle Build Failed."
+                    }
+                }
             }
         }
 
         stage('AI Log Analysis') {
             steps {
                 sh 'python3 scripts/analyze_logs.py'
+            }
+        }
+
+        stage('Mark Build Result') {
+            steps {
+                script {
+                    if (buildStatus != 0) {
+                        error("Gradle Build Failed")
+                    }
+                }
             }
         }
 
@@ -69,4 +86,5 @@ pipeline {
         }
 
     }
+
 }
