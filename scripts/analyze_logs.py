@@ -6,40 +6,53 @@ if not os.path.exists(log_file):
     print("No build log found.")
     exit(0)
 
-with open(log_file, "r") as file:
-    log = file.read()
+with open(log_file) as f:
+    log = f.read()
 
 print("\n========== AI BUILD ANALYSIS ==========\n")
 
 if "BUILD SUCCESSFUL" in log:
+
     print("Status : SUCCESS")
     print("AI Recommendation : No issues detected.")
 
 elif "';' expected" in log:
+
     print("Status : FAILED")
-    print("Root Cause : Missing semicolon in App.java")
-    print("Recommendation : Add ';' at the end of the Java statement.")
+    print("Root Cause : Missing semicolon")
+    print("Recommendation : Add ';' in App.java")
 
 elif "cannot find symbol" in log:
-    print("Status : FAILED")
-    print("Root Cause : Java Compilation Error")
-    print("Recommendation : Check variable or method names.")
 
-elif "Compilation failed" in log:
     print("Status : FAILED")
-    print("Root Cause : Java Compilation Error")
-    print("Recommendation : Check Java source code.")
+    print("Root Cause : Java class or method missing")
+    print("Recommendation : Check class names and imports.")
+
+elif "package does not exist" in log:
+
+    print("Status : FAILED")
+    print("Root Cause : Missing package")
+    print("Recommendation : Verify import statements.")
 
 elif "Could not resolve dependencies" in log:
+
     print("Status : FAILED")
-    print("Root Cause : Dependency Error")
-    print("Recommendation : Verify build.gradle dependencies.")
+    print("Root Cause : Dependency issue")
+    print("Recommendation : Check build.gradle")
+
+elif "Permission denied" in log:
+
+    print("Status : FAILED")
+    print("Root Cause : Permission issue")
+    print("Recommendation : Check file permissions.")
 
 elif "git" in log.lower() and "error" in log.lower():
+
     print("Status : FAILED")
-    print("Root Cause : Git Checkout Issue")
-    print("Recommendation : Verify repository URL and credentials.")
+    print("Root Cause : Git checkout issue")
+    print("Recommendation : Verify Git URL and credentials.")
 
 else:
+
     print("Status : UNKNOWN")
-    print("Recommendation : Review Jenkins build log.")
+    print("Recommendation : Review build log.")
